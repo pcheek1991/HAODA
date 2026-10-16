@@ -1,0 +1,57 @@
+name: Coreo optics
+
+on:
+  pull_request:
+    paths:
+      - 'components/coreo-optics/v1.0/**'
+      - '.github/workflows/coreo-optics.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'components/coreo-optics/v1.0/**'
+      - '.github/workflows/coreo-optics.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0, Node 24
+
+      - name: Download and verify PowerShell 7.6.7
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $version = '7.6.7'
+          $assetName = "PowerShell-$version-win-x64.zip"
+          $assetUri = "https://github.com/PowerShell/PowerShell/releases/download/v$version/$assetName"
+          $archivePath = Join-Path $env:RUNNER_TEMP $assetName
+          $installPath = Join-Path $env:RUNNER_TEMP "pwsh-$version"
+          # Matches the official v7.6.7 hashes.sha256 and GitHub release asset digest.
+          $expectedHash = 'd2f952ebdbf24386cb8923553aa58e41a846db35a6155ea04c58142a4b16dbb7'
+
+          Invoke-WebRequest -Uri $assetUri -OutFile $archivePath
+          $actualHash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualHash -cne $expectedHash) {
+              throw "PowerShell archive SHA-256 mismatch: expected $expectedHash, received $actualHash."
+          }
+
+          Expand-Archive -LiteralPath $archivePath -DestinationPath $installPath
+          $pwshPath = Join-Path $installPath 'pwsh.exe'
+          $runtimeVersion = (& $pwshPath -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion.ToString()' | Out-String).Trim()
+          if ($LASTEXITCODE -ne 0 -or $runtimeVersion -cne $version) {
+              throw "Expected PowerShell $version from the verified archive, received [$runtimeVersion]."
+          }
+
+      - name: Run Coreo optics tests
+        shell: pwsh
+        run: |
+          $pwshPath = Join-Path $env:RUNNER_TEMP 'pwsh-7.6.7\pwsh.exe'
+          $testPath = Join-Path $env:GITHUB_WORKSPACE 'components\coreo-optics\v1.0\tests\Test-Coreo.ps1'
+          & $pwshPath -NoLogo -NoProfile -File $testPath
+          if ($LASTEXITCODE -ne 0) {
+              exit $LASTEXITCODE
+          }

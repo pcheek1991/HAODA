@@ -1,0 +1,93 @@
+LU ZU TAMP OBELISK ZIPPER v1.6
+Embedded certificate collection + standalone certificate-to-hex companion
+===============================================================
+
+FILES
+ main.ps1                    One monolithic PowerShell 7.6.6+ script with in-memory compiled C#.
+                             Contains all 235 distinct DER-encoded public X.509
+                             certificates found in the supplied 8 ZIP files.
+ companion.ps1               Independently runnable PowerShell script, no dependency
+                             on main.ps1; converts .cer/.crt/.der/.pem/.p7b/.p7c to
+                             a labeled hexadecimal @CERT...@END block.
+ drag-cert-onto-me.cmd       Drag-and-drop helper for companion.ps1; no execution-policy bypass.
+ Obelisk-v1.6-Certificates.csv
+                             Full unique-certificate inventory, subjects, issuers,
+                             dates, SHA-256, CA flags, first source archive.
+ Obelisk-v1.6-Provenance.csv
+                             Every one of the 676 certificate appearances from 8 ZIPs,
+                             including repeated PEM/DER/PKCS7 and overlapping archives.
+ Obelisk-v1.6-Sources.csv  The eight ZIP SHA-256 digests and raw occurrence totals.
+
+CONTENT RECONCILIATION
+ - 8 source archives
+ - 676 certificate appearances, including representations and repeats
+ - 235 distinct certificate SHA-256/DER byte sequences
+ - All 235 are stored inline as 0xNN atoms, one clearly labeled @CERT...@END block per unique DER certificate.
+ - Every occurrence in every source member was recorded in the main script as a
+   provenance comment and in the provenance CSV.
+ - All expiring/expired and JITC test certificates included for inventory completeness.
+ - All provided certificate material is PUBLIC: no private keys or credentials.
+ - DoD/ECA/JITC/WCF checksum manifests cryptographically verified against THEIR
+   INCLUDED signer chains and file SHA256 manifests; the chain trust anchors have
+   NOT been authenticated through an independent DoD channel.
+
+SECURITY / TAMP BOUNDARY
+ - No certificate-store modifications or automatic imports.
+ - Adding root authorities changes Windows-wide trust and is not an automatic
+   hardening improvement; JITC and WCF have specific intended environments.
+ - Embedded cert bytes and fingerprints do NOT independently establish signer
+   authority, chain validation, revocation status, subordination, allowed targets,
+   or replay prevention.
+ - The .ir4 AutoUpdate checks DoD/ECA/JITC/WCF official URLs and saves
+   structurally inspected, UNVERIFIED snapshots with SHA-256 filenames. No updates
+   are applied to the operating system.
+ - This is NOT a DoD-certified TAMP updater, nor a tested replacement for
+   the official InstallRoot utility.
+
+QUICK START
+ 1. Review main.ps1 and companion.ps1. No -ExecutionPolicy Bypass is used.
+ 2. Copy to separately approved paths, and use Unblock-File only after reviewing
+    and verifying hashes under your own Windows script-approval policy.
+ 3. On a PowerShell 7.6.6+ Windows workstation:
+       pwsh -NoProfile -File .\main.ps1 -Mode SelfTest
+       pwsh -NoProfile -File .\main.ps1 -Mode CertificateInventory -vv
+       pwsh -NoProfile -File .\main.ps1 -Mode AutoUpdate -vv
+    For the daily user-mode scheduled task, only if expressly chosen:
+       pwsh -NoProfile -File .\main.ps1 -Mode EnableAutoUpdate -IReviewedSchedule
+       pwsh -NoProfile -File .\main.ps1 -Mode AutoUpdateStatus
+       pwsh -NoProfile -File .\main.ps1 -Mode DisableAutoUpdate -ConfirmRemoveTask
+    The v1.6 task has a distinct task name; it does NOT remove earlier v1.5 tasks.
+ 4. Export one public DER cert (not install):
+       pwsh -NoProfile -File .\main.ps1 -Mode ExportCertificate -CertificateId CERT-... -OutputDirectory .
+    Find IDs in Obelisk-v1.6-Certificates.csv or -Mode CertificateInventory -vv.
+    ExportAllCertificates is available and refuses to overwrite existing files.
+
+COMPANION, NO DEPENDENCY ON MAIN
+  Usage from PowerShell:
+       pwsh -NoProfile -File .\companion.ps1 -CertificatePath 'C:\Certificates\DoD.cer'
+       pwsh -NoProfile -File .\companion.ps1 -CertificatePath 'C:\Certificates\DoD.p7b' -Group UserSupplied -OutputPath 'C:\Certificates\new-hex.txt'
+  Or drag the certificate file onto drag-cert-onto-me.cmd (placed next to companion.ps1).
+  Windows Explorer generally does NOT execute .ps1 when dragging a file directly
+  onto it, hence the optional .cmd launcher.
+  The companion prints or writes the complete labeled certificate blocks.
+  Paste entire @CERT...@END blocks inside the single-quoted $EmbeddedCertificateHex
+  here-string in main.ps1, BEFORE its closing '@ line. Do not put blocks outside.
+  Duplicate certificates with existing DER SHA256 are rejected when validated.
+  After editing main.ps1, its SHA256 changes: review the modified source and, if
+  you use the task, re-register the task with the newly approved source hash.
+
+FORMATTING
+  Standard hexadecimal byte syntax is 0xFF (rather than xFF), each atom one byte.
+  The @CERT metadata includes ID, source group, archive name, inner member name,
+  original certificate subject (URL-escaped), exact SHA256 of DER bytes, and expiry.
+  Catalog parser verifies SHA256 and DER parseability before inventory/export.
+
+VALIDATION / LIMITATIONS
+  Extracted and parsed all certificate-containing entries of the eight uploaded
+  archives. Reconstructed all 235 DER byte strings from the main.ps1 0xNN atoms,
+  compared all 235 SHA256 fingerprints, and confirmed every one of the 676
+  source appearances maps to one fingerprint.
+  Could not execute or compile this revision with PowerShell/.NET in this Linux
+  container. Run -Mode SelfTest and -Mode CertificateInventory on the Windows 11
+  workstation before relying on it. Scheduled Task integration also requires
+  local validation. No installer or certificate stores were touched.

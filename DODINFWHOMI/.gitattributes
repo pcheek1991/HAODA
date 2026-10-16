@@ -1,0 +1,3 @@
+/kits/** -text
+/releases/** -text
+/examples/example-output.txt text eol=lf

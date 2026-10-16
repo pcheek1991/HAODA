@@ -1,0 +1,75 @@
+[eye 01/09] Fixed endpoint group: DoD
+[eye 02/09] TLS: OS trust + revocation validation; no redirects; https://crl.gds.disa.mil/pke/config/DoD.ir4
+[eye 03/09] Bounded transfer completed: 232939 bytes
+[eye 04/09] ASN.1 structure accepted
+[eye 05/09] CMS containers parsed; management signatures NOT authenticated
+[eye 06/09] Batch summary: ADD=98, REMOVE=47, CHANGE=0 (proposals only; NOT applied)
+[eye 07/09] SHA256 56AD66790A7D23D364CE2B3CB4400086E52B585B1B8D54CC9A074C4FB8E4F941
+[eye 08/09] Snapshot: new
+[eye 09/09] Store untouched: no certificate add/remove/change operation invoked
+
+Group                : DoD
+State                : NewSnapshot
+Bytes                : 232939
+SHA256               : 56AD66790A7D23D364CE2B3CB4400086E52B585B1B8D54CC9A074C4FB8E4F941
+Path                 : [redacted user profile path]
+Summary              : Batch summary: ADD=98, REMOVE=47, CHANGE=0 (proposals only; NOT applied)
+CMSAuthenticated     : False
+ManagementAuthorized : False
+
+[eye 01/09] Fixed endpoint group: ECA
+[eye 02/09] TLS: OS trust + revocation validation; no redirects; https://crl.gds.disa.mil/pke/config/ECA.ir4
+[eye 03/09] Bounded transfer completed: 81870 bytes
+[eye 04/09] ASN.1 structure accepted
+[eye 05/09] CMS containers parsed; management signatures NOT authenticated
+[eye 06/09] Batch summary: ADD=13, REMOVE=3, CHANGE=0 (proposals only; NOT applied)
+[eye 07/09] SHA256 FE5C59C02D4E5A63700CAAE448A3CB16DF4CC5F9981E8924B45B6C3A9524D5F1
+[eye 08/09] Snapshot: new
+[eye 09/09] Store untouched: no certificate add/remove/change operation invoked
+
+Group                : ECA
+State                : NewSnapshot
+Bytes                : 81870
+SHA256               : FE5C59C02D4E5A63700CAAE448A3CB16DF4CC5F9981E8924B45B6C3A9524D5F1
+Path                 : [redacted user profile path]
+Summary              : Batch summary: ADD=13, REMOVE=3, CHANGE=0 (proposals only; NOT applied)
+CMSAuthenticated     : False
+ManagementAuthorized : False
+
+[eye 01/09] Fixed endpoint group: JITC
+[eye 02/09] TLS: OS trust + revocation validation; no redirects; https://crl.gds.disa.mil/pke/config/JITC.ir4
+[eye 03/09] Bounded transfer completed: 246560 bytes
+[eye 04/09] ASN.1 structure accepted
+[eye 05/09] CMS containers parsed; management signatures NOT authenticated
+[eye 06/09] Batch summary: ADD=102, REMOVE=8, CHANGE=0 (proposals only; NOT applied)
+[eye 07/09] SHA256 6A3434AE8C76D7C5EC3FDEB7C3FC2FBA6FACE19442F1A98F71583B1EF9541FA3
+[eye 08/09] Snapshot: new
+[eye 09/09] Store untouched: no certificate add/remove/change operation invoked
+
+Group                : JITC
+State                : NewSnapshot
+Bytes                : 246560
+SHA256               : 6A3434AE8C76D7C5EC3FDEB7C3FC2FBA6FACE19442F1A98F71583B1EF9541FA3
+Path                 : [redacted user profile path]
+Summary              : Batch summary: ADD=102, REMOVE=8, CHANGE=0 (proposals only; NOT applied)
+CMSAuthenticated     : False
+ManagementAuthorized : False
+
+[eye 01/09] Fixed endpoint group: WCF
+[eye 02/09] TLS: OS trust + revocation validation; no redirects; https://crl.gds.disa.mil/pke/config/WCF.ir4
+[eye 03/09] Bounded transfer completed: 65731 bytes
+[eye 04/09] ASN.1 structure accepted
+[eye 05/09] CMS containers parsed; management signatures NOT authenticated
+[eye 06/09] Batch summary: ADD=13, REMOVE=1, CHANGE=0 (proposals only; NOT applied)
+[eye 07/09] SHA256 07D7C3434D135731194E60827FFD31491D9AAE5E1A700C0367092DA884BD942D
+[eye 08/09] Snapshot: new
+[eye 09/09] Store untouched: no certificate add/remove/change operation invoked
+
+Group                : WCF
+State                : NewSnapshot
+Bytes                : 65731
+SHA256               : 07D7C3434D135731194E60827FFD31491D9AAE5E1A700C0367092DA884BD942D
+Path                 : [redacted user profile path]
+Summary              : Batch summary: ADD=13, REMOVE=1, CHANGE=0 (proposals only; NOT applied)
+CMSAuthenticated     : False
+ManagementAuthorized : False

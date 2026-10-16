@@ -1,0 +1,70 @@
+name: Cross-platform validation
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-powershell:
+    name: Windows PowerShell 5.1 compile
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and exercise embedded C# safely
+        shell: powershell
+        run: .\tests\Validate-WindowsCSharp.ps1
+
+  toric-lens-powershell:
+    name: ToricLens tests on PowerShell 7.6.7
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install and verify PowerShell 7.6.7
+        shell: powershell
+        run: |
+          $version = '7.6.7'
+          $archivePath = Join-Path $env:RUNNER_TEMP "PowerShell-$version-win-x64.zip"
+          $installPath = Join-Path $env:RUNNER_TEMP "PowerShell-$version"
+          $downloadUri = "https://github.com/PowerShell/PowerShell/releases/download/v$version/PowerShell-$version-win-x64.zip"
+          $expectedHash = 'd2f952ebdbf24386cb8923553aa58e41a846db35a6155ea04c58142a4b16dbb7'
+
+          Invoke-WebRequest -Uri $downloadUri -OutFile $archivePath
+          $actualHash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($actualHash -cne $expectedHash) {
+            throw "PowerShell archive SHA-256 mismatch: expected $expectedHash, got $actualHash."
+          }
+
+          Expand-Archive -LiteralPath $archivePath -DestinationPath $installPath
+          $pwshPath = Join-Path $installPath 'pwsh.exe'
+          $actualVersion = & $pwshPath -NoLogo -NoProfile -Command '$PSVersionTable.PSVersion.ToString()'
+          if ($actualVersion -cne $version) {
+            throw "Expected PowerShell $version, found $actualVersion."
+          }
+      - name: Run focused ToricLens tests
+        shell: powershell
+        run: |
+          $pwshPath = Join-Path $env:RUNNER_TEMP 'PowerShell-7.6.7\pwsh.exe'
+          & $pwshPath -NoLogo -NoProfile -File .\tests\Test-ToricLensPower.ps1
+          if ($LASTEXITCODE -ne 0) {
+            throw "ToricLens tests exited with code $LASTEXITCODE."
+          }
+
+  ubuntu:
+    name: Ubuntu shell syntax and sample
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax-check and run sample with logger stub
+        run: bash tests/validate-shell-sample.sh bash main_ubuntu.sh
+
+  macos:
+    name: macOS Zsh syntax and sample
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax-check and run sample with logger stub
+        run: bash tests/validate-shell-sample.sh zsh main_macos.sh
